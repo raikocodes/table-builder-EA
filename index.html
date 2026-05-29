@@ -86,32 +86,31 @@
       width: 100%;
     }
     .app-body {
-      max-width: 900px;
+      max-width: 1200px;
       width: 100%;
       margin: 0 auto;
       padding: 32px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 20px;
+      align-items: start;
       position: relative;
       z-index: 1;
     }
-    .output-section {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      max-width: 900px;
-      width: 100%;
-      margin: 0 auto;
-      align-items: start;
-    }
-    .snippets-stack {
+    .left-col {
       display: flex;
       flex-direction: column;
       gap: 16px;
+      min-width: 0;
     }
-    @media (max-width: 700px) {
-      .output-section { grid-template-columns: 1fr; }
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
+    }
+    @media (max-width: 900px) {
+      .app-body { grid-template-columns: 1fr; }
     }
 
     /* ── Card ── */
@@ -386,6 +385,9 @@
 
 <div class="app-body">
 
+  <!-- Left col: toolbar + editor + preview -->
+  <div class="left-col">
+
   <!-- Toolbar -->
   <div class="toolbar">
     <div class="t-item">
@@ -428,9 +430,6 @@
     </div>
   </div>
 
-  <!-- Preview + Output wrapper -->
-  <div class="output-section">
-
   <!-- Preview -->
   <div class="card">
     <div class="card-head">
@@ -462,8 +461,10 @@
     </div>
   </div>
 
-  <!-- Snippets stacked right -->
-  <div class="snippets-stack">
+  </div><!-- /left-col -->
+
+  <!-- Right col: snippets -->
+  <div class="right-col">
     <div class="card">
       <div class="card-head">
         <span class="card-label">HTML</span>
@@ -484,7 +485,7 @@
     </div>
   </div>
 
-  </div><!-- /output-section -->
+  </div><!-- /right-col -->
 
 </div>
 </div>
