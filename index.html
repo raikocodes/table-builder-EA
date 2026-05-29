@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table Builder — Content Tools</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #F0F0FF;
+      color: #202A3C;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .app-header {
+      background: #202A3C;
+      color: white;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .app-header h1 { font-size: 16px; font-weight: 600; }
+    .app-header .badge {
+      background: #746FFF;
+      font-size: 11px;
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-weight: 500;
+      margin-left: 2px;
+    }
+
+    /* ── Layout ── */
+    .app-body {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #E6E9F0;
+    }
+    .card-head {
+      padding: 10px 16px;
+      border-bottom: 1px solid #E6E9F0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #9099A8;
+    }
+    .card-body { padding: 16px; }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #E6E9F0;
+      padding: 10px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .toolbar-sep {
+      width: 1px; height: 22px;
+      background: #E6E9F0;
+      flex-shrink: 0;
+    }
+    .t-item { display: flex; align-items: center; gap: 7px; }
+    .t-label { font-size: 12px; font-weight: 500; color: #566070; white-space: nowrap; }
+
+    /* ── Form controls ── */
+    select, input[type="text"] {
+      height: 30px;
+      padding: 0 10px;
+      border: 1px solid #E6E9F0;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #202A3C;
+      background: white;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    select:focus, input[type="text"]:focus { border-color: #746FFF; }
+    input[type="text"] { width: 220px; }
+
+    /* Toggle */
+    .toggle { display: flex; align-items: center; gap: 7px; cursor: pointer; user-select: none; }
+    .toggle input[type="checkbox"] { display: none; }
+    .toggle-track {
+      width: 34px; height: 18px;
+      background: #D0D5DD;
+      border-radius: 9px;
+      position: relative;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      width: 14px; height: 14px;
+      background: white;
+      border-radius: 50%;
+      top: 2px; left: 2px;
+      transition: left 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle input:checked + .toggle-track { background: #746FFF; }
+    .toggle input:checked + .toggle-track::after { left: 18px; }
+    .toggle-text { font-size: 13px; font-weight: 500; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 13px; font-weight: 500;
+      cursor: pointer;
+      border: 1px solid #E6E9F0;
+      background: white; color: #202A3C;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: #F5F5FF; border-color: #746FFF; color: #746FFF; }
+
+    /* ── Editor table ── */
+    .editor-scroll { overflow-x: auto; }
+    .editor-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 400px;
+    }
+    .editor-table th,
+    .editor-table td {
+      border: 1px solid #E6E9F0;
+      position: relative;
+      padding: 0;
+      vertical-align: top;
+    }
+    .editor-table thead th { background: #202A3C; }
+    .editor-table tbody td { background: white; }
+    .editor-table tfoot td { background: #FAFAFA; padding: 4px !important; text-align: center; }
+    .ctrl-col { width: 36px !important; background: #FAFAFA !important; }
+
+    .cell-ta {
+      display: block;
+      width: 100%;
+      min-height: 38px;
+      padding: 8px 10px;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #202A3C;
+      resize: none;
+      font-family: inherit;
+      outline: none;
+      overflow: hidden;
+    }
+    .editor-table thead .cell-ta {
+      color: white;
+      font-weight: 600;
+      text-align: center;
+    }
+    .cell-ta:focus { background: rgba(116,111,255,0.07); }
+
+    .del-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; margin: 8px auto;
+      border: none;
+      background: #FF5C5C; color: white;
+      border-radius: 4px; cursor: pointer;
+      font-size: 15px; font-weight: 700;
+      line-height: 1;
+      transition: background 0.15s;
+    }
+    .del-btn:hover { background: #e03e3e; }
+    .del-btn-sm {
+      font-size: 11px;
+      width: auto; height: auto;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: none;
+      background: #FF5C5C; color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .del-btn-sm:hover { background: #e03e3e; }
+
+    .add-row-btn {
+      display: block; width: 100%;
+      padding: 8px;
+      border: none; background: transparent;
+      color: #746FFF; font-size: 13px; font-weight: 500;
+      cursor: pointer; font-family: inherit;
+    }
+    .add-row-btn:hover { background: #F5F5FF; }
+
+    /* ── Preview stage ── */
+    .preview-stage {
+      background: #EAEAFF;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-radius: 0 0 10px 10px;
+    }
+    .preview-viewport {
+      width: 100%;
+      max-width: 100%;
+      transition: max-width 0.25s ease;
+      background: white;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(32,42,60,0.10);
+    }
+    #previewFrame {
+      display: block;
+      width: 100%;
+      border: none;
+      min-height: 80px;
+    }
+    .preview-width-label {
+      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9099A8;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Breakpoint buttons ── */
+    .bp-bar { display: flex; align-items: center; gap: 4px; }
+    .bp-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px;
+      border: 1px solid #E6E9F0;
+      border-radius: 6px;
+      background: white; color: #9099A8;
+      font-size: 12px; font-weight: 500;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+    }
+    .bp-btn:hover { border-color: #746FFF; color: #746FFF; }
+    .bp-btn.active { background: #202A3C; border-color: #202A3C; color: white; }
+
+    /* ── Output grid ── */
+    .output-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 700px) { .output-grid { grid-template-columns: 1fr; } }
+
+    .code-pre {
+      background: #13141F;
+      color: #C8C2FF;
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 11.5px;
+      line-height: 1.65;
+      padding: 14px 16px;
+      border-radius: 7px;
+      overflow: auto;
+      max-height: 300px;
+      white-space: pre;
+    }
+
+    .copy-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 13px;
+      background: #746FFF; color: white;
+      border: none; border-radius: 6px;
+      font-size: 12px; font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+    .copy-btn:hover { background: #6B58FD; }
+    .copy-btn.ok { background: #1DB954; }
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+  </svg>
+  <h1>Table Builder</h1>
+  <span class="badge">Content Tools</span>
+</header>
+
+<div class="app-body">
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="t-item">
+      <span class="t-label">Table type</span>
+      <select id="tableType" onchange="generate()">
+        <option value="comparison">Comparison</option>
+        <option value="standard">Standard</option>
+      </select>
+    </div>
+
+    <div class="toolbar-sep"></div>
+
+    <div class="t-item">
+      <span class="t-label">Aria label</span>
+      <input type="text" id="ariaLabel" value="Comparison table" oninput="generate()">
+    </div>
+
+    <div class="toolbar-sep"></div>
+
+    <label class="toggle">
+      <input type="checkbox" id="darkHeader" checked onchange="renderEditor()">
+      <span class="toggle-track"></span>
+      <span class="toggle-text">Dark header</span>
+    </label>
+
+    <div class="toolbar-sep"></div>
+
+    <button class="btn" onclick="addColumn()">+ Column</button>
+    <button class="btn" onclick="addRow()">+ Row</button>
+  </div>
+
+  <!-- Editor -->
+  <div class="card">
+    <div class="card-head">
+      <span class="card-label">Edit Table</span>
+      <span style="font-size:12px;color:#9099A8;">Click any cell to edit</span>
+    </div>
+    <div style="padding:0;">
+      <div class="editor-scroll" id="editorWrap"></div>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div class="card">
+    <div class="card-head">
+      <span class="card-label">Preview</span>
+      <div class="bp-bar">
+        <button class="bp-btn active" data-bp="desktop" onclick="setBreakpoint('desktop')" title="Desktop (992px+)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Desktop
+        </button>
+        <button class="bp-btn" data-bp="tablet" onclick="setBreakpoint('tablet')" title="Tablet (768px)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Tablet
+        </button>
+        <button class="bp-btn" data-bp="mobileLandscape" onclick="setBreakpoint('mobileLandscape')" title="Mobile Landscape (480px)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="10" rx="2"/><line x1="19" y1="12" x2="19.01" y2="12"/></svg>
+          Landscape
+        </button>
+        <button class="bp-btn" data-bp="mobilePortrait" onclick="setBreakpoint('mobilePortrait')" title="Mobile Portrait (375px)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Portrait
+        </button>
+      </div>
+    </div>
+    <div class="preview-stage">
+      <div class="preview-viewport" id="previewViewport">
+        <iframe id="previewFrame" scrolling="no"></iframe>
+      </div>
+      <div class="preview-width-label" id="bpLabel">992px+</div>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div class="output-grid">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-label">HTML</span>
+        <button class="copy-btn" id="copyHtmlBtn" onclick="copyOut('html')">Copy HTML</button>
+      </div>
+      <div class="card-body">
+        <pre class="code-pre" id="htmlOut"></pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <span class="card-label">CSS Snippet</span>
+        <button class="copy-btn" id="copyCssBtn" onclick="copyOut('css')">Copy CSS</button>
+      </div>
+      <div class="card-body">
+        <pre class="code-pre" id="cssOut"></pre>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+const state = {
+  headers: ['Feature', 'DeskTime', 'Competitor'],
+  rows: [
+    ['Time tracking', 'Fully automatic', 'Timer-based'],
+    ['Monitoring depth', 'URL, app, screenshots, AI summary', 'Screenshots, app/URL, activity'],
+    ['Pricing entry', '$6.42/user/month', '$4.99/seat/month'],
+  ]
+};
+
+// ── CSS library ────────────────────────────────────────────────────────────
+const CSS = {
+comparison: `/* Comparison table */
+div.cmp-wrap {
+  margin: 24px 0 !important;
+}
+div.cmp-wrap table.cmp-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  table-layout: fixed !important;
+  display: table !important;
+}
+div.cmp-wrap table.cmp-table thead {
+  display: table-header-group !important;
+}
+div.cmp-wrap table.cmp-table tbody {
+  display: table-row-group !important;
+}
+div.cmp-wrap table.cmp-table thead tr {
+  display: table-row !important;
+  border-bottom: 1px solid #E6E9F0 !important;
+}
+div.cmp-wrap table.cmp-table thead tr th {
+  display: table-cell !important;
+  position: static !important;
+  width: auto !important;
+  font-size: 16px !important;
+  line-height: 1.44 !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+  padding: 8px !important;
+  vertical-align: top !important;
+  border: none !important;
+  background: transparent !important;
+}
+div.cmp-wrap table.cmp-table tbody tr {
+  display: table-row !important;
+  border-top: 1px solid #E6E9F0 !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+div.cmp-wrap table.cmp-table tbody tr td {
+  display: table-cell !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  padding: 8px !important;
+  vertical-align: top !important;
+  text-align: left !important;
+  border: none !important;
+}
+div.cmp-wrap table.cmp-table tbody tr td:first-child {
+  font-weight: 600 !important;
+}
+div.cmp-wrap table.cmp-table thead tr.cmp-thead-dark th {
+  background-color: #202A3C !important;
+  color: #ffffff !important;
+  text-align: center !important;
+}
+@media (max-width: 640px) {
+  div.cmp-wrap table.cmp-table thead { display: none !important; }
+  div.cmp-wrap table.cmp-table,
+  div.cmp-wrap table.cmp-table tbody,
+  div.cmp-wrap table.cmp-table tbody tr,
+  div.cmp-wrap table.cmp-table tbody tr td { display: block !important; width: 100% !important; }
+  div.cmp-wrap table.cmp-table tbody tr { border-top: 1px solid #E6E9F0 !important; }
+  div.cmp-wrap table.cmp-table tbody tr td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    opacity: 0.7;
+    margin-bottom: 4px;
+  }
+}`,
+
+standard: `/* Standard data table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  color: #202A3C;
+}
+thead th {
+  background: #202A3C;
+  color: #fff;
+  padding: 10px 12px;
+  font-weight: 600;
+  text-align: left;
+  font-size: 14px;
+}
+tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #E6E9F0;
+  vertical-align: top;
+  line-height: 1.5;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: #F5F5FF; }
+@media (max-width: 640px) {
+  thead { display: none; }
+  table, tbody, tr, td { display: block; width: 100%; }
+  tr { border-top: 1px solid #E6E9F0; }
+  td { padding: 8px 12px; }
+  td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+    margin-bottom: 3px;
+    font-weight: 600;
+  }
+}`
+};
+
+// ── Render editor ──────────────────────────────────────────────────────────
+function renderEditor() {
+  const wrap = document.getElementById('editorWrap');
+  const cols = state.headers.length;
+
+  let t = `<table class="editor-table">`;
+
+  // Header row
+  t += `<thead><tr>`;
+  state.headers.forEach((h, ci) => {
+    t += `<th>
+      <textarea class="cell-ta" oninput="cellChange(-1,${ci},this)">${esc(h)}</textarea>
+    </th>`;
+  });
+  t += `<th class="ctrl-col"></th></tr></thead>`;
+
+  // Body rows
+  t += `<tbody>`;
+  state.rows.forEach((row, ri) => {
+    t += `<tr>`;
+    row.forEach((cell, ci) => {
+      t += `<td>
+        <textarea class="cell-ta" oninput="cellChange(${ri},${ci},this)">${esc(cell)}</textarea>
+      </td>`;
+    });
+    t += `<td class="ctrl-col">
+      <button class="del-btn" onclick="removeRow(${ri})" title="Delete row">×</button>
+    </td></tr>`;
+  });
+
+  // Add row
+  t += `<tr><td colspan="${cols + 1}" style="padding:0;">
+    <button class="add-row-btn" onclick="addRow()">+ Add row</button>
+  </td></tr>`;
+  t += `</tbody>`;
+
+  // Column delete footer
+  t += `<tfoot><tr>`;
+  state.headers.forEach((_, ci) => {
+    t += `<td>${cols > 2
+      ? `<button class="del-btn-sm" onclick="removeColumn(${ci})">× col</button>`
+      : ''}</td>`;
+  });
+  t += `<td class="ctrl-col"></td></tr></tfoot>`;
+
+  t += `</table>`;
+  wrap.innerHTML = t;
+
+  // Auto-resize all textareas
+  wrap.querySelectorAll('.cell-ta').forEach(resize);
+
+  generate();
+}
+
+function resize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+function cellChange(ri, ci, el) {
+  resize(el);
+  if (ri === -1) state.headers[ci] = el.value;
+  else state.rows[ri][ci] = el.value;
+  generate();
+}
+
+// ── Add / remove ───────────────────────────────────────────────────────────
+function addRow() {
+  state.rows.push(state.headers.map(() => ''));
+  renderEditor();
+}
+
+function removeRow(ri) {
+  if (state.rows.length <= 1) return;
+  state.rows.splice(ri, 1);
+  renderEditor();
+}
+
+function addColumn() {
+  state.headers.push('Column ' + (state.headers.length + 1));
+  state.rows = state.rows.map(r => [...r, '']);
+  renderEditor();
+}
+
+function removeColumn(ci) {
+  if (state.headers.length <= 2) return;
+  state.headers.splice(ci, 1);
+  state.rows = state.rows.map(r => { r.splice(ci, 1); return r; });
+  renderEditor();
+}
+
+// ── Generate ───────────────────────────────────────────────────────────────
+function generate() {
+  const type = document.getElementById('tableType').value;
+  const dark = document.getElementById('darkHeader').checked;
+  const aria = document.getElementById('ariaLabel').value;
+
+  let html = '';
+
+  if (type === 'comparison') {
+    const n = state.headers.length;
+    const first = 22;
+    const rest = n > 1 ? ((100 - first) / (n - 1)).toFixed(1) : 78;
+
+    html += `<div class="cmp-wrap" role="region" aria-label="${escAttr(aria)}">\n`;
+    html += `  <table class="cmp-table">\n`;
+    html += `    <colgroup>\n      <col style="width:${first}%">\n`;
+    state.headers.slice(1).forEach(() => html += `      <col style="width:${rest}%">\n`);
+    html += `    </colgroup>\n`;
+    html += `    <thead>\n      <tr${dark ? ' class="cmp-thead-dark"' : ''}>\n`;
+    state.headers.forEach(h => html += `        <th>${escHtml(h.trim())}</th>\n`);
+    html += `      </tr>\n    </thead>\n    <tbody>\n`;
+    state.rows.forEach(row => {
+      html += `      <tr>\n`;
+      row.forEach((c, ci) => {
+        html += `        <td data-label="${escAttr((state.headers[ci] || '').trim())}">${escHtml(c.trim())}</td>\n`;
+      });
+      html += `      </tr>\n`;
+    });
+    html += `    </tbody>\n  </table>\n</div>`;
+  } else {
+    html += `<table>\n  <thead>\n    <tr>\n`;
+    state.headers.forEach(h => html += `      <th>${escHtml(h.trim())}</th>\n`);
+    html += `    </tr>\n  </thead>\n  <tbody>\n`;
+    state.rows.forEach(row => {
+      html += `    <tr>\n`;
+      row.forEach((c, ci) => {
+        html += `      <td data-label="${escAttr((state.headers[ci] || '').trim())}">${escHtml(c.trim())}</td>\n`;
+      });
+      html += `    </tr>\n`;
+    });
+    html += `  </tbody>\n</table>`;
+  }
+
+  document.getElementById('htmlOut').textContent = html;
+  document.getElementById('cssOut').textContent = CSS[type];
+
+  // Preview in isolated iframe
+  const frame = document.getElementById('previewFrame');
+  frame.srcdoc = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 16px; margin: 0; }
+  ${CSS[type]}
+</style></head><body>${html}</body></html>`;
+
+  frame.onload = () => {
+    try { frame.style.height = (frame.contentDocument.body.scrollHeight + 32) + 'px'; } catch(e) {}
+  };
+}
+
+// ── Copy ──────────────────────────────────────────────────────────────────
+function copyOut(which) {
+  const text = document.getElementById(which === 'html' ? 'htmlOut' : 'cssOut').textContent;
+  const btn = document.getElementById(which === 'html' ? 'copyHtmlBtn' : 'copyCssBtn');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('ok');
+    setTimeout(() => {
+      btn.textContent = which === 'html' ? 'Copy HTML' : 'Copy CSS';
+      btn.classList.remove('ok');
+    }, 2000);
+  });
+}
+
+// ── Breakpoints ───────────────────────────────────────────────────────────
+const BPS = {
+  desktop:         { width: null, label: '992px+' },
+  tablet:          { width: 768,  label: '768px'  },
+  mobileLandscape: { width: 480,  label: '480px'  },
+  mobilePortrait:  { width: 375,  label: '375px'  },
+};
+
+function setBreakpoint(bp) {
+  document.querySelectorAll('.bp-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.bp === bp);
+  });
+  const vp = document.getElementById('previewViewport');
+  vp.style.maxWidth = BPS[bp].width ? BPS[bp].width + 'px' : '100%';
+  document.getElementById('bpLabel').textContent = BPS[bp].label;
+  // Re-measure iframe height after transition
+  setTimeout(() => {
+    const frame = document.getElementById('previewFrame');
+    try { frame.style.height = (frame.contentDocument.body.scrollHeight + 32) + 'px'; } catch(e) {}
+  }, 280);
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function esc(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escHtml(s) { return esc(s); }
+function escAttr(s) {
+  return (s || '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+renderEditor();
+</script>
+</body>
+</html>
