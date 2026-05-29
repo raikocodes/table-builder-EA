@@ -97,12 +97,21 @@
       z-index: 1;
     }
     .output-section {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 16px;
       max-width: 900px;
       width: 100%;
       margin: 0 auto;
+      align-items: start;
+    }
+    .snippets-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    @media (max-width: 700px) {
+      .output-section { grid-template-columns: 1fr; }
     }
 
     /* ── Card ── */
@@ -453,8 +462,8 @@
     </div>
   </div>
 
-  <!-- Output -->
-  <div class="output-grid">
+  <!-- Snippets stacked right -->
+  <div class="snippets-stack">
     <div class="card">
       <div class="card-head">
         <span class="card-label">HTML</span>
