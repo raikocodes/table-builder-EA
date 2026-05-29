@@ -203,7 +203,8 @@
       padding: 0;
       vertical-align: top;
     }
-    .editor-table thead th { background: #202A3C; }
+    .editor-table thead th { background: #F5F5FF; }
+    .editor-table.dark-head thead th { background: #202A3C; }
     .editor-table tbody td { background: white; }
     .editor-table tfoot td { background: #FAFAFA; padding: 4px !important; text-align: center; }
     .ctrl-col { width: 36px !important; background: #FAFAFA !important; }
@@ -224,10 +225,11 @@
       overflow: hidden;
     }
     .editor-table thead .cell-ta {
-      color: white;
+      color: #202A3C;
       font-weight: 600;
       text-align: center;
     }
+    .editor-table.dark-head thead .cell-ta { color: white; }
     .cell-ta:focus { background: rgba(116,111,255,0.07); }
 
     .del-btn {
@@ -556,12 +558,18 @@ table {
   color: #202A3C;
 }
 thead th {
-  background: #202A3C;
-  color: #fff;
+  background: #F5F5FF;
+  color: #202A3C;
   padding: 10px 12px;
   font-weight: 600;
   text-align: left;
   font-size: 14px;
+  border-bottom: 2px solid #E6E9F0;
+}
+tr.std-thead-dark th {
+  background: #202A3C;
+  color: #fff;
+  border-bottom: none;
 }
 tbody td {
   padding: 10px 12px;
@@ -593,8 +601,9 @@ tbody tr:hover td { background: #F5F5FF; }
 function renderEditor() {
   const wrap = document.getElementById('editorWrap');
   const cols = state.headers.length;
+  const dark = document.getElementById('darkHeader').checked;
 
-  let t = `<table class="editor-table">`;
+  let t = `<table class="editor-table${dark ? ' dark-head' : ''}">`;
 
   // Header row
   t += `<thead><tr>`;
@@ -710,7 +719,7 @@ function generate() {
     });
     html += `    </tbody>\n  </table>\n</div>`;
   } else {
-    html += `<table>\n  <thead>\n    <tr>\n`;
+    html += `<table>\n  <thead>\n    <tr${dark ? ' class="std-thead-dark"' : ''}>\n`;
     state.headers.forEach(h => html += `      <th>${escHtml(h.trim())}</th>\n`);
     html += `    </tr>\n  </thead>\n  <tbody>\n`;
     state.rows.forEach(row => {
