@@ -14,6 +14,54 @@
       min-height: 100vh;
     }
 
+    /* ── Gradients ── */
+    .gradients-wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+    .gradient_top {
+      position: absolute;
+      top: -180px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 500px;
+      background: radial-gradient(ellipse at center, rgba(116,111,255,0.18) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .gradient_left {
+      position: absolute;
+      top: 15%;
+      left: -220px;
+      width: 560px;
+      height: 560px;
+      background: radial-gradient(ellipse at center, rgba(180,174,255,0.22) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .gradient_right {
+      position: absolute;
+      top: 45%;
+      right: -220px;
+      width: 560px;
+      height: 560px;
+      background: radial-gradient(ellipse at center, rgba(107,88,253,0.14) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .gradient_bottom {
+      position: absolute;
+      bottom: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 400px;
+      background: radial-gradient(ellipse at center, rgba(116,111,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
     /* ── Header ── */
     .app-header {
       background: #202A3C;
@@ -35,12 +83,14 @@
 
     /* ── Layout ── */
     .app-body {
-      max-width: 1100px;
+      max-width: 900px;
       margin: 0 auto;
-      padding: 24px 16px;
+      padding: 32px 24px;
       display: flex;
       flex-direction: column;
       gap: 16px;
+      position: relative;
+      z-index: 1;
     }
 
     /* ── Card ── */
@@ -266,7 +316,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
-    @media (max-width: 700px) { .output-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 800px) { .output-grid { grid-template-columns: 1fr; } }
 
     .code-pre {
       background: #13141F;
@@ -304,6 +354,12 @@
   <h1>Table Builder</h1>
   <span class="badge">Content Tools</span>
 </header>
+
+<div class="gradients-wrapper">
+<div class="gradient_top"></div>
+<div class="gradient_left"></div>
+<div class="gradient_right"></div>
+<div class="gradient_bottom"></div>
 
 <div class="app-body">
 
@@ -402,6 +458,7 @@
     </div>
   </div>
 
+</div>
 </div>
 
 <script>
