@@ -699,6 +699,7 @@ function renderEditor() {
   wrap.querySelectorAll('.cell-ta').forEach(resize);
 
   generate();
+  setTimeout(syncColHeights, 50);
 }
 
 function resize(el) {
@@ -794,6 +795,7 @@ function generate() {
 
   frame.onload = () => {
     try { frame.style.height = (frame.contentDocument.body.scrollHeight + 32) + 'px'; } catch(e) {}
+    syncColHeights();
   };
 }
 
@@ -842,8 +844,17 @@ function escAttr(s) {
   return (s || '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
+// ── Sync right col height to left col ─────────────────────────────────────
+function syncColHeights() {
+  const left = document.querySelector('.left-col');
+  const right = document.querySelector('.right-col');
+  if (!left || !right) return;
+  right.style.height = left.offsetHeight + 'px';
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────
 renderEditor();
+window.addEventListener('resize', syncColHeights);
 </script>
 </body>
 </html>
