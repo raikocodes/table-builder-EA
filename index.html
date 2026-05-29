@@ -82,8 +82,12 @@
     }
 
     /* ── Layout ── */
+    .gradients-wrapper {
+      width: 100%;
+    }
     .app-body {
       max-width: 900px;
+      width: 100%;
       margin: 0 auto;
       padding: 32px 24px;
       display: flex;
@@ -91,6 +95,14 @@
       gap: 16px;
       position: relative;
       z-index: 1;
+    }
+    .output-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
     }
 
     /* ── Card ── */
@@ -407,6 +419,9 @@
     </div>
   </div>
 
+  <!-- Preview + Output wrapper -->
+  <div class="output-section">
+
   <!-- Preview -->
   <div class="card">
     <div class="card-head">
@@ -459,6 +474,8 @@
       </div>
     </div>
   </div>
+
+  </div><!-- /output-section -->
 
 </div>
 </div>
