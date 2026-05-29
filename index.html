@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Table Builder — Content Tools</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#746FFF">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Table Builder">
+  <link rel="apple-touch-icon" href="icon.svg">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -852,6 +858,11 @@ function syncColHeights() {
   const right = document.querySelector('.right-col');
   if (!left || !right) return;
   right.style.height = left.offsetHeight + 'px';
+}
+
+// ── Service worker ────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/table-builder/sw.js');
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────
