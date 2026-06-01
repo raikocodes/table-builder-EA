@@ -6,7 +6,7 @@
   <title>Table Builder — Content Tools</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#746FFF">
+  <meta name="theme-color" content="#2B5BF5">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Table Builder">
   <link rel="apple-touch-icon" href="icon.svg">
@@ -15,8 +15,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #F0F0FF;
-      color: #202A3C;
+      background: #F5F0E8;
+      color: #1A1A2E;
       min-height: 100vh;
     }
 
@@ -32,7 +32,7 @@
       transform: translateX(-50%);
       width: 900px;
       height: 500px;
-      background: radial-gradient(ellipse at center, rgba(116,111,255,0.18) 0%, transparent 70%);
+      background: radial-gradient(ellipse at center, rgba(43,91,245,0.12) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -42,7 +42,7 @@
       left: -220px;
       width: 560px;
       height: 560px;
-      background: radial-gradient(ellipse at center, rgba(180,174,255,0.22) 0%, transparent 65%);
+      background: radial-gradient(ellipse at center, rgba(43,91,245,0.10) 0%, transparent 65%);
       pointer-events: none;
       z-index: 0;
     }
@@ -52,7 +52,7 @@
       right: -220px;
       width: 560px;
       height: 560px;
-      background: radial-gradient(ellipse at center, rgba(107,88,253,0.14) 0%, transparent 65%);
+      background: radial-gradient(ellipse at center, rgba(43,91,245,0.08) 0%, transparent 65%);
       pointer-events: none;
       z-index: 0;
     }
@@ -63,14 +63,14 @@
       transform: translateX(-50%);
       width: 700px;
       height: 400px;
-      background: radial-gradient(ellipse at center, rgba(116,111,255,0.12) 0%, transparent 70%);
+      background: radial-gradient(ellipse at center, rgba(43,91,245,0.07) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
 
     /* ── Header ── */
     .app-header {
-      background: #202A3C;
+      background: #1A1A2E;
       color: white;
       padding: 14px 24px;
       display: flex;
@@ -79,7 +79,7 @@
     }
     .app-header h1 { font-size: 16px; font-weight: 600; }
     .app-header .badge {
-      background: #746FFF;
+      background: #2B5BF5;
       font-size: 11px;
       padding: 2px 9px;
       border-radius: 20px;
@@ -193,12 +193,12 @@
       border: 1px solid #E6E9F0;
       border-radius: 6px;
       font-size: 13px;
-      color: #202A3C;
+      color: #1A1A2E;
       background: white;
       outline: none;
       transition: border-color 0.15s;
     }
-    select:focus, input[type="text"]:focus { border-color: #746FFF; }
+    select:focus, input[type="text"]:focus { border-color: #2B5BF5; }
     input[type="text"] { width: 220px; }
 
     /* Toggle */
@@ -222,7 +222,7 @@
       transition: left 0.2s;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
-    .toggle input:checked + .toggle-track { background: #746FFF; }
+    .toggle input:checked + .toggle-track { background: #2B5BF5; }
     .toggle input:checked + .toggle-track::after { left: 18px; }
     .toggle-text { font-size: 13px; font-weight: 500; }
 
@@ -234,11 +234,11 @@
       font-size: 13px; font-weight: 500;
       cursor: pointer;
       border: 1px solid #E6E9F0;
-      background: white; color: #202A3C;
+      background: white; color: #1A1A2E;
       transition: all 0.15s;
       white-space: nowrap;
     }
-    .btn:hover { background: #F5F5FF; border-color: #746FFF; color: #746FFF; }
+    .btn:hover { background: #F0F4FF; border-color: #2B5BF5; color: #2B5BF5; }
 
     /* ── Editor table ── */
     .editor-scroll { overflow-x: auto; }
@@ -254,8 +254,8 @@
       padding: 0;
       vertical-align: top;
     }
-    .editor-table thead th { background: #F5F5FF; }
-    .editor-table.dark-head thead th { background: #202A3C; }
+    .editor-table thead th { background: #F0F4FF; }
+    .editor-table.dark-head thead th { background: #1A1A2E; }
     .editor-table tbody td { background: white; }
     .editor-table tfoot td { background: #FAFAFA; padding: 4px !important; text-align: center; }
     .ctrl-col { width: 36px !important; background: #FAFAFA !important; }
@@ -269,19 +269,19 @@
       background: transparent;
       font-size: 13px;
       line-height: 1.5;
-      color: #202A3C;
+      color: #1A1A2E;
       resize: none;
       font-family: inherit;
       outline: none;
       overflow: hidden;
     }
     .editor-table thead .cell-ta {
-      color: #202A3C;
+      color: #1A1A2E;
       font-weight: 600;
       text-align: center;
     }
     .editor-table.dark-head thead .cell-ta { color: white; }
-    .cell-ta:focus { background: rgba(116,111,255,0.07); }
+    .cell-ta:focus { background: rgba(43,91,245,0.06); }
 
     .del-btn {
       display: flex; align-items: center; justify-content: center;
@@ -311,14 +311,14 @@
       display: block; width: 100%;
       padding: 8px;
       border: none; background: transparent;
-      color: #746FFF; font-size: 13px; font-weight: 500;
+      color: #2B5BF5; font-size: 13px; font-weight: 500;
       cursor: pointer; font-family: inherit;
     }
-    .add-row-btn:hover { background: #F5F5FF; }
+    .add-row-btn:hover { background: #F0F4FF; }
 
     /* ── Preview stage ── */
     .preview-stage {
-      background: #EAEAFF;
+      background: #E8EEF5;
       padding: 16px;
       display: flex;
       flex-direction: column;
@@ -360,8 +360,8 @@
       cursor: pointer; font-family: inherit;
       transition: all 0.15s;
     }
-    .bp-btn:hover { border-color: #746FFF; color: #746FFF; }
-    .bp-btn.active { background: #202A3C; border-color: #202A3C; color: white; }
+    .bp-btn:hover { border-color: #2B5BF5; color: #2B5BF5; }
+    .bp-btn.active { background: #1A1A2E; border-color: #1A1A2E; color: white; }
 
     /* ── Output grid ── */
     .output-grid {
@@ -372,8 +372,8 @@
     @media (max-width: 800px) { .output-grid { grid-template-columns: 1fr; } }
 
     .code-pre {
-      background: #13141F;
-      color: #C8C2FF;
+      background: #0D1A3A;
+      color: #7EB3FF;
       font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
       font-size: 11.5px;
       line-height: 1.65;
@@ -387,14 +387,14 @@
     .copy-btn {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 5px 13px;
-      background: #746FFF; color: white;
+      background: #2B5BF5; color: white;
       border: none; border-radius: 6px;
       font-size: 12px; font-weight: 500;
       cursor: pointer;
       transition: background 0.15s;
       font-family: inherit;
     }
-    .copy-btn:hover { background: #6B58FD; }
+    .copy-btn:hover { background: #1A4AE0; }
     .copy-btn.ok { background: #1DB954; }
 
     /* ── CSS Preset bar ── */
@@ -419,23 +419,23 @@
       font-size: 12px; font-weight: 500;
       cursor: pointer;
       border: 1px solid #E6E9F0;
-      background: white; color: #202A3C;
+      background: white; color: #1A1A2E;
       transition: all 0.15s;
       white-space: nowrap;
       font-family: inherit;
     }
-    .preset-btn:hover { background: #F5F5FF; border-color: #746FFF; color: #746FFF; }
+    .preset-btn:hover { background: #F0F4FF; border-color: #2B5BF5; color: #2B5BF5; }
     .preset-btn.danger:hover { background: #FFF5F5; border-color: #FF5C5C; color: #FF5C5C; }
-    .preset-btn.primary { background: #746FFF; color: white; border-color: #746FFF; }
-    .preset-btn.primary:hover { background: #6B58FD; color: white; }
+    .preset-btn.primary { background: #2B5BF5; color: white; border-color: #2B5BF5; }
+    .preset-btn.primary:hover { background: #1A4AE0; color: white; }
 
     .css-ta {
       display: block;
       width: 100%;
       flex: 1;
       min-height: 0;
-      background: #13141F;
-      color: #C8C2FF;
+      background: #0D1A3A;
+      color: #7EB3FF;
       font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
       font-size: 11.5px;
       line-height: 1.65;
@@ -675,7 +675,7 @@ div.cmp-wrap table.cmp-table tbody tr td:first-child {
   font-weight: 600 !important;
 }
 div.cmp-wrap table.cmp-table thead tr.cmp-thead-dark th {
-  background-color: #202A3C !important;
+  background-color: #1A1A2E !important;
   color: #ffffff !important;
   text-align: center !important;
 }
@@ -702,11 +702,11 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: 15px;
-  color: #202A3C;
+  color: #1A1A2E;
 }
 thead th {
-  background: #F5F5FF;
-  color: #202A3C;
+  background: #F0F4FF;
+  color: #1A1A2E;
   padding: 10px 12px;
   font-weight: 600;
   text-align: left;
@@ -714,7 +714,7 @@ thead th {
   border-bottom: 2px solid #E6E9F0;
 }
 tr.std-thead-dark th {
-  background: #202A3C;
+  background: #1A1A2E;
   color: #fff;
   border-bottom: none;
 }
@@ -725,7 +725,7 @@ tbody td {
   line-height: 1.5;
 }
 tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover td { background: #F5F5FF; }
+tbody tr:hover td { background: #F0F4FF; }
 @media (max-width: 640px) {
   thead { display: none; }
   table, tbody, tr, td { display: block; width: 100%; }
