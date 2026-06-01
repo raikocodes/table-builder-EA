@@ -92,12 +92,12 @@
       width: 100%;
     }
     .app-body {
-      max-width: 1400px;
+      max-width: 1600px;
       width: 100%;
       margin: 0 auto;
       padding: 32px 32px;
       display: grid;
-      grid-template-columns: 1fr 440px;
+      grid-template-columns: 1fr 300px 380px;
       gap: 20px;
       align-items: stretch;
       position: relative;
@@ -107,6 +107,11 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      min-width: 0;
+    }
+    .mid-col {
+      position: sticky;
+      top: 32px;
       min-width: 0;
     }
     .right-col {
@@ -138,10 +143,15 @@
       max-height: none;
       overflow: auto;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 1100px) {
+      .app-body { grid-template-columns: 1fr 280px; }
+      .mid-col { position: static; height: auto; overflow-y: visible; }
       .right-col { position: static; height: auto; }
       .right-col .card { flex: none; }
       .right-col .code-pre { max-height: 300px; }
+    }
+    @media (max-width: 700px) {
+      .app-body { grid-template-columns: 1fr; }
     }
 
     /* ── Card ── */
@@ -448,6 +458,148 @@
       overflow: auto;
     }
 
+    /* ── Visual style panel ── */
+    .mid-col .card {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #E6E9F0;
+    }
+    .visual-panel {
+      overflow-y: scroll;
+      max-height: calc(100vh - 160px);
+      padding: 12px;
+    }
+    .visual-panel .vgroup {
+      margin-bottom: 4px;
+    }
+    .visual-panel::-webkit-scrollbar {
+      width: 6px;
+    }
+    .visual-panel::-webkit-scrollbar-track {
+      background: #F0F0F0;
+      border-radius: 3px;
+    }
+    .visual-panel::-webkit-scrollbar-thumb {
+      background: #C0C8D8;
+      border-radius: 3px;
+    }
+    .visual-panel::-webkit-scrollbar-thumb:hover {
+      background: #2B5BF5;
+    }
+    .mid-col .card {
+      overflow: visible;
+    }
+
+    .vgroup {
+      border: 1px solid #E6E9F0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .vgroup-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      background: white;
+      user-select: none;
+    }
+    .vgroup-head:hover { background: #F8F9FB; }
+    .vgroup-chevron {
+      font-size: 10px;
+      color: #9099A8;
+      transition: transform 0.2s;
+    }
+    .vgroup.open .vgroup-chevron { transform: rotate(180deg); }
+    .vgroup-body {
+      display: none;
+      padding: 10px 12px 12px;
+      background: #FAFBFC;
+      border-top: 1px solid #E6E9F0;
+      gap: 10px;
+      flex-direction: column;
+    }
+    .vgroup.open .vgroup-body { display: flex; }
+
+    .vrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .vrow label {
+      font-size: 11px;
+      color: #566070;
+      width: 110px;
+      flex-shrink: 0;
+    }
+    .vrow input[type="color"] {
+      width: 28px; height: 28px;
+      border: 1px solid #E6E9F0;
+      border-radius: 5px;
+      padding: 1px;
+      cursor: pointer;
+      background: white;
+      flex-shrink: 0;
+    }
+    .vrow input[type="text"].hex-input {
+      width: 72px;
+      height: 28px;
+      font-size: 12px;
+      font-family: 'Menlo', monospace;
+      padding: 0 7px;
+      border: 1px solid #E6E9F0;
+      border-radius: 5px;
+    }
+    .vrow select.v-select {
+      flex: 1;
+      height: 28px;
+      font-size: 12px;
+      border: 1px solid #E6E9F0;
+      border-radius: 5px;
+      padding: 0 6px;
+      background: white;
+      color: #1A1A2E;
+    }
+    /* ── Unit toggle ── */
+    .unit-toggle {
+      display: flex;
+      border: 1px solid #E6E9F0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .unit-btn {
+      padding: 3px 9px;
+      font-size: 11px; font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: white;
+      color: #9099A8;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .unit-btn.active { background: #2B5BF5; color: white; }
+    .unit-btn:not(.active):hover { background: #F0F4FF; color: #2B5BF5; }
+
+    .vrow input[type="number"] {
+      width: 70px;
+      height: 28px;
+      font-size: 12px;
+      padding: 0 7px;
+      border: 1px solid #E6E9F0;
+      border-radius: 5px;
+      color: #1A1A2E;
+      background: white;
+      -moz-appearance: textfield;
+    }
+    .vrow input[type="number"]::-webkit-outer-spin-button,
+    .vrow input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .vrow .unit {
+      font-size: 11px;
+      color: #9099A8;
+      flex-shrink: 0;
+    }
+
     /* ── Preset name modal ── */
     .modal-backdrop {
       position: fixed; inset: 0;
@@ -493,18 +645,8 @@
   <!-- Toolbar -->
   <div class="toolbar">
     <div class="t-item">
-      <span class="t-label">Table type</span>
-      <select id="tableType" onchange="generate()">
-        <option value="comparison">Comparison</option>
-        <option value="standard">Standard</option>
-      </select>
-    </div>
-
-    <div class="toolbar-sep"></div>
-
-    <div class="t-item">
       <span class="t-label">Aria label</span>
-      <input type="text" id="ariaLabel" value="Comparison table" oninput="generate()">
+      <input type="text" id="ariaLabel" value="Data table" oninput="generate()">
     </div>
 
     <div class="toolbar-sep"></div>
@@ -565,7 +707,226 @@
 
   </div><!-- /left-col -->
 
-  <!-- Right col: snippets -->
+  <!-- Mid col: visual styles -->
+  <div class="mid-col">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-label">Styles</span>
+        <div class="unit-toggle">
+          <button class="unit-btn active" id="unitPx" onclick="setUnit('px')">px</button>
+          <button class="unit-btn" id="unitRem" onclick="setUnit('rem')">rem</button>
+        </div>
+      </div>
+      <div class="visual-panel" id="visualPanel">
+
+        <!-- Colors -->
+        <div class="vgroup open" id="vg-colors">
+          <div class="vgroup-head" onclick="toggleGroup('vg-colors')">
+            Colors <span class="vgroup-chevron">▼</span>
+          </div>
+          <div class="vgroup-body">
+            <div class="vrow">
+              <label>Header bg</label>
+              <input type="color" id="vc-headerBg" oninput="syncHex(this,'vc-headerBg-hex');visualToCSS()">
+              <input type="text" class="hex-input" id="vc-headerBg-hex" maxlength="7" oninput="syncColor(this,'vc-headerBg');visualToCSS()">
+            </div>
+            <div class="vrow">
+              <label>Header text</label>
+              <input type="color" id="vc-headerText" oninput="syncHex(this,'vc-headerText-hex');visualToCSS()">
+              <input type="text" class="hex-input" id="vc-headerText-hex" maxlength="7" oninput="syncColor(this,'vc-headerText');visualToCSS()">
+            </div>
+            <div class="vrow">
+              <label>Row bg</label>
+              <input type="color" id="vc-rowBg" oninput="syncHex(this,'vc-rowBg-hex');visualToCSS()">
+              <input type="text" class="hex-input" id="vc-rowBg-hex" maxlength="7" oninput="syncColor(this,'vc-rowBg');visualToCSS()">
+            </div>
+            <div class="vrow">
+              <label>Alt row bg</label>
+              <input type="color" id="vc-altRowBg" oninput="syncHex(this,'vc-altRowBg-hex');visualToCSS()">
+              <input type="text" class="hex-input" id="vc-altRowBg-hex" maxlength="7" oninput="syncColor(this,'vc-altRowBg');visualToCSS()">
+            </div>
+            <div class="vrow">
+              <label>Row hover</label>
+              <input type="color" id="vc-hoverBg" oninput="syncHex(this,'vc-hoverBg-hex');visualToCSS()">
+              <input type="text" class="hex-input" id="vc-hoverBg-hex" maxlength="7" oninput="syncColor(this,'vc-hoverBg');visualToCSS()">
+            </div>
+            <div class="vrow">
+              <label>Body text</label>
+              <input type="color" id="vc-bodyText" oninput="syncHex(this,'vc-bodyText-hex');visualToCSS()">
+              <input type="text" class="hex-input" id="vc-bodyText-hex" maxlength="7" oninput="syncColor(this,'vc-bodyText');visualToCSS()">
+            </div>
+            <div class="vrow">
+              <label>Border</label>
+              <input type="color" id="vc-border" oninput="syncHex(this,'vc-border-hex');visualToCSS()">
+              <input type="text" class="hex-input" id="vc-border-hex" maxlength="7" oninput="syncColor(this,'vc-border');visualToCSS()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Typography -->
+        <div class="vgroup" id="vg-type">
+          <div class="vgroup-head" onclick="toggleGroup('vg-type')">
+            Typography <span class="vgroup-chevron">▼</span>
+          </div>
+          <div class="vgroup-body">
+            <div class="vrow">
+              <label>Font family</label>
+              <select class="v-select" id="vc-fontFamily" onchange="visualToCSS()">
+                <option value="inherit">Inherit from page</option>
+                <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">System UI</option>
+                <option value="Georgia, serif">Georgia</option>
+                <option value="'Times New Roman', serif">Times New Roman</option>
+                <option value="'Courier New', monospace">Courier New</option>
+              </select>
+            </div>
+            <div class="vrow">
+              <label>Body size</label>
+              <input type="number" id="vc-fontSize" min="12" max="22" value="15" oninput="visualToCSS()">
+              <span class="unit">px</span>
+            </div>
+            <div class="vrow">
+              <label>Header size</label>
+              <input type="number" id="vc-headerSize" min="11" max="22" value="14" oninput="visualToCSS()">
+              <span class="unit">px</span>
+            </div>
+            <div class="vrow">
+              <label>Header weight</label>
+              <select class="v-select" id="vc-headerWeight" onchange="visualToCSS()">
+                <option value="400">Regular</option>
+                <option value="500">Medium</option>
+                <option value="600" selected>Semi-bold</option>
+                <option value="700">Bold</option>
+              </select>
+            </div>
+            <div class="vrow">
+              <label>Line height</label>
+              <input type="number" id="vc-lineHeight" min="1" max="3" step="0.1" value="1.5" oninput="visualToCSS()">
+              
+            </div>
+          </div>
+        </div>
+
+        <!-- Spacing -->
+        <div class="vgroup" id="vg-spacing">
+          <div class="vgroup-head" onclick="toggleGroup('vg-spacing')">
+            Spacing <span class="vgroup-chevron">▼</span>
+          </div>
+          <div class="vgroup-body">
+            <div class="vrow">
+              <label>Cell padding V</label>
+              <input type="number" id="vc-paddingV" min="0" max="60" value="10" oninput="visualToCSS()">
+              <span class="unit">px</span>
+            </div>
+            <div class="vrow">
+              <label>Cell padding H</label>
+              <input type="number" id="vc-paddingH" min="0" max="60" value="12" oninput="visualToCSS()">
+              <span class="unit">px</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Borders -->
+        <div class="vgroup" id="vg-borders">
+          <div class="vgroup-head" onclick="toggleGroup('vg-borders')">
+            Borders <span class="vgroup-chevron">▼</span>
+          </div>
+          <div class="vgroup-body">
+            <div class="vrow">
+              <label>Style</label>
+              <select class="v-select" id="vc-borderStyle" onchange="visualToCSS()">
+                <option value="solid">Solid</option>
+                <option value="dashed">Dashed</option>
+                <option value="dotted">Dotted</option>
+                <option value="none">None</option>
+              </select>
+            </div>
+            <div class="vrow">
+              <label>Width</label>
+              <input type="number" id="vc-borderWidth" min="0" max="10" value="1" oninput="visualToCSS()">
+              <span class="unit">px</span>
+            </div>
+            <div class="vrow">
+              <label>Header bottom</label>
+              <input type="number" id="vc-headerBorder" min="0" max="10" value="2" oninput="visualToCSS()">
+              <span class="unit">px</span>
+            </div>
+            <div class="vrow">
+              <label>Row radius</label>
+              <input type="number" id="vc-rowRadius" min="0" max="40" value="0" oninput="visualToCSS()">
+              <span class="unit">px</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Responsive -->
+        <div class="vgroup" id="vg-responsive">
+          <div class="vgroup-head" onclick="toggleGroup('vg-responsive')">
+            Responsive <span class="vgroup-chevron">▼</span>
+          </div>
+          <div class="vgroup-body">
+            <div class="vrow">
+              <label>Break at</label>
+              <input type="number" id="vc-breakpoint" min="200" max="1400" step="10" value="640" oninput="visualToCSS()">
+              <span class="unit">px</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Labels -->
+        <div class="vgroup" id="vg-labels">
+          <div class="vgroup-head" onclick="toggleGroup('vg-labels')">
+            Mobile Labels <span class="vgroup-chevron">▼</span>
+          </div>
+          <div class="vgroup-body">
+            <div class="vrow">
+              <label>Size</label>
+              <input type="number" id="vc-labelSize" min="8" max="20" value="11" oninput="visualToCSS()">
+              <span class="unit" id="labelSizeUnit">px</span>
+            </div>
+            <div class="vrow">
+              <label>Color</label>
+              <input type="color" id="vc-labelColor" oninput="syncHex(this,'vc-labelColor-hex');visualToCSS()">
+              <input type="text" class="hex-input" id="vc-labelColor-hex" maxlength="7" oninput="syncColor(this,'vc-labelColor');visualToCSS()">
+            </div>
+            <div class="vrow">
+              <label>Weight</label>
+              <select class="v-select" id="vc-labelWeight" onchange="visualToCSS()">
+                <option value="400">Regular</option>
+                <option value="500">Medium</option>
+                <option value="600" selected>Semi-bold</option>
+                <option value="700">Bold</option>
+              </select>
+            </div>
+            <div class="vrow">
+              <label>Transform</label>
+              <select class="v-select" id="vc-labelTransform" onchange="visualToCSS()">
+                <option value="uppercase">Uppercase</option>
+                <option value="capitalize">Capitalize</option>
+                <option value="none">None</option>
+              </select>
+            </div>
+            <div class="vrow">
+              <label>Letter spacing</label>
+              <input type="number" id="vc-labelSpacing" min="0" max="0.2" step="0.01" value="0.05" oninput="visualToCSS()">
+              <span class="unit">em</span>
+            </div>
+            <div class="vrow">
+              <label>Opacity</label>
+              <input type="number" id="vc-labelOpacity" min="0" max="1" step="0.05" value="0.6" oninput="visualToCSS()">
+            </div>
+            <div class="vrow">
+              <label>Margin below</label>
+              <input type="number" id="vc-labelMargin" min="0" max="16" value="3" oninput="visualToCSS()">
+              <span class="unit">px</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /visual-panel -->
+    </div>
+  </div><!-- /mid-col -->
+
+  <!-- Right col: code -->
   <div class="right-col">
     <div class="card">
       <div class="card-head">
@@ -578,7 +939,7 @@
     </div>
     <div class="card">
       <div class="card-head">
-        <span class="card-label">CSS Snippet</span>
+        <span class="card-label">CSS</span>
         <button class="copy-btn" id="copyCssBtn" onclick="copyOut('css')">Copy CSS</button>
       </div>
       <div class="preset-bar">
@@ -591,7 +952,7 @@
         <textarea class="css-ta" id="cssOut" spellcheck="false" oninput="onCssEdit()"></textarea>
       </div>
     </div>
-  </div>
+  </div><!-- /right-col -->
 
   </div><!-- /right-col -->
 
@@ -613,136 +974,14 @@
 <script>
 // ── State ──────────────────────────────────────────────────────────────────
 const state = {
-  headers: ['Feature', 'DeskTime', 'Competitor'],
+  headers: ['Column A', 'Column B', 'Column C'],
   rows: [
-    ['Time tracking', 'Fully automatic', 'Timer-based'],
-    ['Monitoring depth', 'URL, app, screenshots, AI summary', 'Screenshots, app/URL, activity'],
-    ['Pricing entry', '$6.42/user/month', '$4.99/seat/month'],
+    ['Row 1', 'Value', 'Value'],
+    ['Row 2', 'Value', 'Value'],
+    ['Row 3', 'Value', 'Value'],
   ]
 };
 
-// ── CSS library ────────────────────────────────────────────────────────────
-const CSS = {
-comparison: `/* Comparison table */
-div.cmp-wrap {
-  margin: 24px 0 !important;
-}
-div.cmp-wrap table.cmp-table {
-  width: 100% !important;
-  border-collapse: collapse !important;
-  table-layout: fixed !important;
-  display: table !important;
-}
-div.cmp-wrap table.cmp-table thead {
-  display: table-header-group !important;
-}
-div.cmp-wrap table.cmp-table tbody {
-  display: table-row-group !important;
-}
-div.cmp-wrap table.cmp-table thead tr {
-  display: table-row !important;
-  border-bottom: 1px solid #E6E9F0 !important;
-}
-div.cmp-wrap table.cmp-table thead tr th {
-  display: table-cell !important;
-  position: static !important;
-  width: auto !important;
-  font-size: 16px !important;
-  line-height: 1.44 !important;
-  font-weight: 600 !important;
-  text-align: left !important;
-  padding: 8px !important;
-  vertical-align: top !important;
-  border: none !important;
-  background: transparent !important;
-}
-div.cmp-wrap table.cmp-table tbody tr {
-  display: table-row !important;
-  border-top: 1px solid #E6E9F0 !important;
-  border-left: none !important;
-  border-right: none !important;
-}
-div.cmp-wrap table.cmp-table tbody tr td {
-  display: table-cell !important;
-  font-size: 16px !important;
-  line-height: 1.5 !important;
-  padding: 8px !important;
-  vertical-align: top !important;
-  text-align: left !important;
-  border: none !important;
-}
-div.cmp-wrap table.cmp-table tbody tr td:first-child {
-  font-weight: 600 !important;
-}
-div.cmp-wrap table.cmp-table thead tr.cmp-thead-dark th {
-  background-color: #1A1A2E !important;
-  color: #ffffff !important;
-  text-align: center !important;
-}
-@media (max-width: 640px) {
-  div.cmp-wrap table.cmp-table thead { display: none !important; }
-  div.cmp-wrap table.cmp-table,
-  div.cmp-wrap table.cmp-table tbody,
-  div.cmp-wrap table.cmp-table tbody tr,
-  div.cmp-wrap table.cmp-table tbody tr td { display: block !important; width: 100% !important; }
-  div.cmp-wrap table.cmp-table tbody tr { border-top: 1px solid #E6E9F0 !important; }
-  div.cmp-wrap table.cmp-table tbody tr td::before {
-    content: attr(data-label);
-    display: block;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    opacity: 0.7;
-    margin-bottom: 4px;
-  }
-}`,
-
-standard: `/* Standard data table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 15px;
-  color: #1A1A2E;
-}
-thead th {
-  background: #F0F4FF;
-  color: #1A1A2E;
-  padding: 10px 12px;
-  font-weight: 600;
-  text-align: left;
-  font-size: 14px;
-  border-bottom: 2px solid #E6E9F0;
-}
-tr.std-thead-dark th {
-  background: #1A1A2E;
-  color: #fff;
-  border-bottom: none;
-}
-tbody td {
-  padding: 10px 12px;
-  border-bottom: 1px solid #E6E9F0;
-  vertical-align: top;
-  line-height: 1.5;
-}
-tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover td { background: #F0F4FF; }
-@media (max-width: 640px) {
-  thead { display: none; }
-  table, tbody, tr, td { display: block; width: 100%; }
-  tr { border-top: 1px solid #E6E9F0; }
-  td { padding: 8px 12px; }
-  td::before {
-    content: attr(data-label);
-    display: block;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.6;
-    margin-bottom: 3px;
-    font-weight: 600;
-  }
-}`
-};
 
 // ── Render editor ──────────────────────────────────────────────────────────
 function renderEditor() {
@@ -839,51 +1078,26 @@ function removeColumn(ci) {
 
 // ── Generate ───────────────────────────────────────────────────────────────
 function generate() {
-  const type = document.getElementById('tableType').value;
   const dark = document.getElementById('darkHeader').checked;
   const aria = document.getElementById('ariaLabel').value;
 
-  let html = '';
-
-  if (type === 'comparison') {
-    const n = state.headers.length;
-    const first = 22;
-    const rest = n > 1 ? ((100 - first) / (n - 1)).toFixed(1) : 78;
-
-    html += `<div class="cmp-wrap" role="region" aria-label="${escAttr(aria)}">\n`;
-    html += `  <table class="cmp-table">\n`;
-    html += `    <colgroup>\n      <col style="width:${first}%">\n`;
-    state.headers.slice(1).forEach(() => html += `      <col style="width:${rest}%">\n`);
-    html += `    </colgroup>\n`;
-    html += `    <thead>\n      <tr${dark ? ' class="cmp-thead-dark"' : ''}>\n`;
-    state.headers.forEach(h => html += `        <th>${escHtml(h.trim())}</th>\n`);
-    html += `      </tr>\n    </thead>\n    <tbody>\n`;
-    state.rows.forEach(row => {
-      html += `      <tr>\n`;
-      row.forEach((c, ci) => {
-        html += `        <td data-label="${escAttr((state.headers[ci] || '').trim())}">${escHtml(c.trim())}</td>\n`;
-      });
-      html += `      </tr>\n`;
+  let html = `<table role="region" aria-label="${escAttr(aria)}">\n`;
+  html += `  <thead>\n    <tr${dark ? ' class="dark-header"' : ''}>\n`;
+  state.headers.forEach(h => html += `      <th>${escHtml(h.trim())}</th>\n`);
+  html += `    </tr>\n  </thead>\n  <tbody>\n`;
+  state.rows.forEach(row => {
+    html += `    <tr>\n`;
+    row.forEach((c, ci) => {
+      html += `      <td data-label="${escAttr((state.headers[ci] || '').trim())}">${escHtml(c.trim())}</td>\n`;
     });
-    html += `    </tbody>\n  </table>\n</div>`;
-  } else {
-    html += `<table>\n  <thead>\n    <tr${dark ? ' class="std-thead-dark"' : ''}>\n`;
-    state.headers.forEach(h => html += `      <th>${escHtml(h.trim())}</th>\n`);
-    html += `    </tr>\n  </thead>\n  <tbody>\n`;
-    state.rows.forEach(row => {
-      html += `    <tr>\n`;
-      row.forEach((c, ci) => {
-        html += `      <td data-label="${escAttr((state.headers[ci] || '').trim())}">${escHtml(c.trim())}</td>\n`;
-      });
-      html += `    </tr>\n`;
-    });
-    html += `  </tbody>\n</table>`;
-  }
+    html += `    </tr>\n`;
+  });
+  html += `  </tbody>\n</table>`;
 
   document.getElementById('htmlOut').textContent = html;
-  // Only update CSS textarea if not currently being edited by user
   if (!cssUserEditing) {
-    document.getElementById('cssOut').value = currentCSS();
+    visualToCSS();
+    return; // visualToCSS calls refreshPreview
   }
 
   refreshPreview();
@@ -945,22 +1159,14 @@ function syncColHeights() {
 
 // ── CSS preset system ─────────────────────────────────────────────────────
 let cssUserEditing = false;
-
-function presetsKey() {
-  return 'tb_presets_' + document.getElementById('tableType').value;
-}
+const PRESETS_KEY = 'tb_presets';
 
 function loadPresets() {
-  try { return JSON.parse(localStorage.getItem(presetsKey()) || '[]'); } catch(e) { return []; }
+  try { return JSON.parse(localStorage.getItem(PRESETS_KEY) || '[]'); } catch(e) { return []; }
 }
 
 function savePresets(list) {
-  localStorage.setItem(presetsKey(), JSON.stringify(list));
-}
-
-function currentCSS() {
-  const type = document.getElementById('tableType').value;
-  return CSS[type];
+  localStorage.setItem(PRESETS_KEY, JSON.stringify(list));
 }
 
 function renderPresetSelect(selectedName) {
@@ -985,13 +1191,14 @@ function loadPreset() {
   const sel = document.getElementById('presetSelect');
   const ta = document.getElementById('cssOut');
   if (sel.value === '__default__') {
-    ta.value = currentCSS();
+    cssUserEditing = false;
+    visualToCSS();
+    return;
   } else {
     const presets = loadPresets();
     const p = presets.find(x => x.name === sel.value);
-    if (p) ta.value = p.css;
+    if (p) { ta.value = p.css; cssUserEditing = true; }
   }
-  cssUserEditing = false;
   document.getElementById('deletePresetBtn').disabled = sel.value === '__default__';
   refreshPreview();
 }
@@ -1005,9 +1212,11 @@ function refreshPreview() {
   const frame = document.getElementById('previewFrame');
   const html = document.getElementById('htmlOut').textContent;
   const css = document.getElementById('cssOut').value;
-  frame.srcdoc = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  frame.srcdoc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 16px; margin: 0; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 16px; margin: 0; overflow-x: hidden; max-width: 100%; }
+  table { max-width: 100%; }
   ${css}
 </style></head><body>${html}</body></html>`;
   frame.onload = () => {
@@ -1048,17 +1257,53 @@ function deletePreset() {
   const presets = loadPresets().filter(p => p.name !== name);
   savePresets(presets);
   renderPresetSelect('__default__');
-  document.getElementById('cssOut').value = currentCSS();
+  visualToCSS();
   cssUserEditing = false;
   refreshPreview();
 }
 
+function defaultResponsiveCSS() {
+  const breakpoint  = getVC('vc-breakpoint');
+  const border      = getVC('vc-border') || '#e0e0e0';
+  const borderStyle = getVC('vc-borderStyle') || 'solid';
+  const borderWidth = getVC('vc-borderWidth') || '1';
+  const paddingV    = getVC('vc-paddingV') || '10';
+  const paddingH    = getVC('vc-paddingH') || '12';
+  const labelSize   = getVC('vc-labelSize') || '11';
+  const labelColor  = getVC('vc-labelColor') || '#1a1a1a';
+  const labelWeight = getVC('vc-labelWeight') || '600';
+  const labelTransform = getVC('vc-labelTransform') || 'uppercase';
+  const labelSpacing   = getVC('vc-labelSpacing') || '0.05';
+  const labelOpacity   = getVC('vc-labelOpacity') || '0.6';
+  const labelMargin    = getVC('vc-labelMargin') || '3';
+
+  document.getElementById('cssOut').value =
+`@media (max-width: ${breakpoint}px) {
+  thead { display: none; }
+  table, tbody, tr, td { display: block; width: 100%; }
+  tbody tr { border-top: ${u(borderWidth)} ${borderStyle} ${border}; }
+  tbody tr:first-child { border-top: none; }
+  td { padding: ${u(paddingV)} ${u(paddingH)}; border: none !important; }
+  td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: ${u(labelSize)};
+    font-weight: ${labelWeight};
+    color: ${labelColor};
+    text-transform: ${labelTransform};
+    letter-spacing: ${labelSpacing}em;
+    opacity: ${labelOpacity};
+    margin-bottom: ${labelMargin}px;
+  }
+}`;
+  refreshPreview();
+}
+
 function resetToDefault() {
-  document.getElementById('cssOut').value = currentCSS();
   document.getElementById('presetSelect').value = '__default__';
   document.getElementById('deletePresetBtn').disabled = true;
   cssUserEditing = false;
-  refreshPreview();
+  visualToCSS();
 }
 
 // ── Service worker ────────────────────────────────────────────────────────
@@ -1074,14 +1319,184 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') backdrop.classList.add('hidden');
 });
 
+// ── Unit system ───────────────────────────────────────────────────────────
+let currentUnit = 'px';
+const BASE = 16; // px base for rem conversion
+
+function setUnit(unit) {
+  currentUnit = unit;
+  document.getElementById('unitPx').classList.toggle('active', unit === 'px');
+  document.getElementById('unitRem').classList.toggle('active', unit === 'rem');
+
+  // Convert numeric inputs (not breakpoint, not label letter-spacing/opacity/margin)
+  const sizeIds = ['vc-fontSize','vc-headerSize','vc-paddingV','vc-paddingH',
+                   'vc-borderWidth','vc-headerBorder','vc-rowRadius','vc-labelSize'];
+  sizeIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const v = parseFloat(el.value);
+    if (unit === 'rem') {
+      el.value = +(v / BASE).toFixed(3);
+      el.step = '0.0625';
+      el.min = '0';
+      el.max = '10';
+    } else {
+      el.value = Math.round(v * BASE);
+      el.step = '1';
+      el.min = id === 'vc-labelSize' ? '8' : '0';
+      el.max = id === 'vc-labelSize' ? '20' : id.includes('border') ? '10' : id.includes('padding') ? '60' : '40';
+    }
+  });
+
+  // Update unit labels in the panel
+  document.querySelectorAll('.vrow .unit').forEach(el => {
+    if (el.id === 'labelSizeUnit') { el.textContent = unit; return; }
+    if (el.textContent === 'px' || el.textContent === 'rem') el.textContent = unit;
+  });
+
+  visualToCSS();
+}
+
+function u(val) {
+  // Format a size value with current unit
+  return currentUnit === 'rem' ? `${val}rem` : `${val}px`;
+}
+
+// ── Visual controls helpers ────────────────────────────────────────────────
+function syncHex(colorInput, hexId) {
+  document.getElementById(hexId).value = colorInput.value;
+}
+function syncColor(hexInput, colorId) {
+  const v = hexInput.value;
+  if (/^#[0-9a-fA-F]{6}$/.test(v)) document.getElementById(colorId).value = v;
+}
+
+function toggleGroup(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// ── Read visual control values ─────────────────────────────────────────────
+function getVC(id) { return document.getElementById(id).value; }
+
+// ── Visual → CSS generation ────────────────────────────────────────────────
+function visualToCSS() {
+  const headerBg    = getVC('vc-headerBg');
+  const headerText  = getVC('vc-headerText');
+  const rowBg       = getVC('vc-rowBg');
+  const altRowBg    = getVC('vc-altRowBg');
+  const hoverBg     = getVC('vc-hoverBg');
+  const bodyText    = getVC('vc-bodyText');
+  const border      = getVC('vc-border');
+  const fontFamily  = getVC('vc-fontFamily');
+  const fontSize    = getVC('vc-fontSize');
+  const headerSize  = getVC('vc-headerSize');
+  const headerWeight= getVC('vc-headerWeight');
+  const lineHeight  = getVC('vc-lineHeight');
+  const paddingV    = getVC('vc-paddingV');
+  const paddingH    = getVC('vc-paddingH');
+  const borderStyle = getVC('vc-borderStyle');
+  const borderWidth = getVC('vc-borderWidth');
+  const headerBorder= getVC('vc-headerBorder');
+  const rowRadius   = getVC('vc-rowRadius');
+  const breakpoint  = getVC('vc-breakpoint');
+  const labelSize     = getVC('vc-labelSize');
+  const labelColor    = getVC('vc-labelColor') || bodyText;
+  const labelWeight   = getVC('vc-labelWeight');
+  const labelTransform= getVC('vc-labelTransform');
+  const labelSpacing  = getVC('vc-labelSpacing');
+  const labelOpacity  = getVC('vc-labelOpacity');
+  const labelMargin   = getVC('vc-labelMargin');
+
+  const fontRule = fontFamily !== 'inherit' ? `font-family: ${fontFamily};` : '';
+  const borderDecl = borderStyle === 'none' ? 'border-bottom: none;' : `border-bottom: ${u(borderWidth)} ${borderStyle} ${border};`;
+  const headerBorderDecl = borderStyle === 'none' ? 'border-bottom: none;' : `border-bottom: ${u(headerBorder)} ${borderStyle} ${border};`;
+  const altRow = altRowBg !== rowBg ? `tbody tr:nth-child(even) td { background: ${altRowBg}; }` : '';
+  const radiusRule = rowRadius > 0 ? `border-radius: ${u(rowRadius)};` : '';
+  const labelCSS = `
+    content: attr(data-label);
+    display: block;
+    font-size: ${u(labelSize)};
+    font-weight: ${labelWeight};
+    color: ${labelColor};
+    text-transform: ${labelTransform};
+    letter-spacing: ${labelSpacing}em;
+    opacity: ${labelOpacity};
+    margin-bottom: ${labelMargin}px;`;
+
+  let css = '';
+
+  const rowBorderDecl = borderStyle === 'none' ? '' : `border-top: ${u(borderWidth)} ${borderStyle} ${border};`;
+
+  css = `/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: ${u(fontSize)};
+  color: ${bodyText};
+  background: ${rowBg};
+  ${fontRule}
+}
+thead th {
+  background: ${headerBg};
+  color: ${headerText};
+  padding: ${u(paddingV)} ${u(paddingH)};
+  font-weight: ${headerWeight};
+  text-align: left;
+  font-size: ${u(headerSize)};
+  ${headerBorderDecl}
+  ${radiusRule}
+}
+tr.dark-header th {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+tbody td {
+  padding: ${u(paddingV)} ${u(paddingH)};
+  ${borderDecl}
+  vertical-align: top;
+  line-height: ${lineHeight};
+}
+${altRow}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: ${hoverBg}; }
+@media (max-width: ${breakpoint}px) {
+  thead { display: none; }
+  table, tbody, tr, td { display: block; width: 100%; }
+  tbody tr { border-top: ${borderStyle === 'none' ? `1px solid ${border}` : `${u(borderWidth)} ${borderStyle} ${border}`}; }
+  tbody tr:first-child { border-top: none; }
+  td { padding: ${u(paddingV)} ${u(paddingH)}; border: none !important; }
+  td::before {${labelCSS}
+  }
+}`;
+
+  document.getElementById('cssOut').value = css;
+  cssUserEditing = false;
+  refreshPreview();
+}
+
+// ── Init visual controls with defaults ────────────────────────────────────
+function initVisualDefaults() {
+  const defaults = {
+    'vc-headerBg': '#f5f5f5', 'vc-headerBg-hex': '#f5f5f5',
+    'vc-headerText': '#1a1a1a', 'vc-headerText-hex': '#1a1a1a',
+    'vc-rowBg': '#ffffff', 'vc-rowBg-hex': '#ffffff',
+    'vc-altRowBg': '#ffffff', 'vc-altRowBg-hex': '#ffffff',
+    'vc-hoverBg': '#fafafa', 'vc-hoverBg-hex': '#fafafa',
+    'vc-bodyText': '#1a1a1a', 'vc-bodyText-hex': '#1a1a1a',
+    'vc-border': '#e0e0e0', 'vc-border-hex': '#e0e0e0',
+    'vc-labelColor': '#1a1a1a', 'vc-labelColor-hex': '#1a1a1a',
+  };
+  Object.entries(defaults).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  });
+}
+
+initVisualDefaults();
 renderEditor();
 renderPresetSelect('__default__');
-
-// Re-render preset list when table type changes
-document.getElementById('tableType').addEventListener('change', () => {
-  cssUserEditing = false;
-  renderPresetSelect('__default__');
-});
+visualToCSS();
+cssUserEditing = false;
 
 // Keep in sync whenever left col changes size
 const ro = new ResizeObserver(() => syncColHeights());
